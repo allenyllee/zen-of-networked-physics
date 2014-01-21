@@ -1,0 +1,24 @@
+﻿Build started 2013/10/1 上午 10:15:18.
+     1>Project "D:\igs\Project\demo\Zen of Networked Physics\server\NetworkedPhysics.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\NetworkedPhysics.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Ob2 /Ot /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _MBCS /Gm- /EHsc /MT /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt FreeType.cpp NetworkedPhysics.cpp
+         FreeType.cpp
+         NetworkedPhysics.cpp
+         Generating Code...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Release\NetworkedPhysics.exe" /INCREMENTAL:NO /NOLOGO opengl32.lib glu32.lib kernel32.lib gdi32.lib shell32.lib user32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\NetworkedPhysics.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"D:\igs\Project\demo\Zen of Networked Physics\server\Release\NetworkedPhysics.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Release\NetworkedPhysics.lib" /MACHINE:X86 Release\FreeType.obj
+         Release\NetworkedPhysics.obj
+         freetype\freetype.lib /nodefaultlib:libc 
+         NetworkedPhysics.vcxproj -> D:\igs\Project\demo\Zen of Networked Physics\server\Release\NetworkedPhysics.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"Release\NetworkedPhysics.exe;#1" /manifest Release\NetworkedPhysics.exe.intermediate.manifest
+       FinalizeBuildStatus:
+         Deleting file "Release\NetworkedPhysics.unsuccessfulbuild".
+         Touching "Release\NetworkedPhysics.lastbuildstate".
+     1>Done Building Project "D:\igs\Project\demo\Zen of Networked Physics\server\NetworkedPhysics.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.70
