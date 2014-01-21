@@ -39,7 +39,7 @@ public:
             Vector position = move.state.position;
             Quaternion orientation = move.state.orientation;
             Cube::Input input = move.input;
-            fprintf(logfile, "%d: position=(%f,%f,%f), orientation=(%f,%f,%f,%f), input=(%d,%d,%d,%d,%d)\n", move.time, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump);
+            fprintf(logfile, "%d, position, %f,%f,%f, orientation, %f,%f,%f,%f, input, %d,%d,%d,%d,%d\n", move.time, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump);
         }
 
         // determine if important move
@@ -260,7 +260,7 @@ private:
 
         Move& oldest()
         {
-            assert(!empty());
+            //assert(!empty());
             return moves[tail];
         }
 

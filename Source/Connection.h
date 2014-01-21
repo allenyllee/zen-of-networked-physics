@@ -28,6 +28,11 @@ public:
 
         #ifdef LOGGING
         logfile = fopen("sync.log", "w");
+		logfile2 = fopen("insert_input_queue.log","w");
+		logfile3 = fopen("pop_input_queue.log","w");
+		logfile4 = fopen("insert_sync_queue.log","w");
+		logfile5 = fopen("pop_sync_queue.log","w");
+
         #endif
     }
 
@@ -37,7 +42,15 @@ public:
         if (logfile)
         {
             fclose(logfile);
+			fclose(logfile2);
+			fclose(logfile3);
+			fclose(logfile4);
+			fclose(logfile5);
             logfile = 0;
+			logfile2 = 0;
+			logfile3 = 0;
+			logfile4 = 0;
+			logfile5 = 0;
         }
         #endif
     }          
@@ -67,6 +80,7 @@ public:
         event->time = client->time;
         event->input = client->input;
         client->history.importantMoveArray(event->importantMoves);
+		event->isInputEvent = true; //is input event?
         insert(clientToServer, event);
 
         // step ahead
@@ -78,10 +92,10 @@ protected:
 
     /// input event recieved on server side
 
-    void input(unsigned int t, Cube::Input &input, const std::vector<Move> &importantMoves)
+    void input(unsigned int t, Cube::Input &input, const std::vector<Move> &importantMoves, unsigned int deliveryTime)
     {
         // update server with input
-
+		fprintf(logfile3,"pop, client time, %d, event time, %d, delivery time, %d, input jump, %d\n", time, t, deliveryTime, input.jump);
         server->update(t, input, importantMoves);
 
         // send sync event back to client side
@@ -90,6 +104,7 @@ protected:
         event->time = server->time;
         event->state = server->cube.state();
         event->input = input;
+		event->isInputEvent = false;
         insert(serverToClient, event);
 
         #ifdef LOGGING
@@ -98,16 +113,17 @@ protected:
             Vector position = event->state.position;
             Quaternion orientation = event->state.orientation;
             Cube::Input input = event->input;
-            fprintf(logfile, "%d: position=(%f,%f,%f), orientation=(%f,%f,%f,%f), input=(%d,%d,%d,%d,%d)\n", event->time, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump);
+            fprintf(logfile, "%d, position, %f,%f,%f, orientation, %f,%f,%f,%f, input, %d,%d,%d,%d,%d\n", event->time, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump);
         }
         #endif
     }
 
     /// synchronize event received on client side
 
-    void synchronize(unsigned int t, const Cube::State &state, const Cube::Input &input)
+    void synchronize(unsigned int t, const Cube::State &state, const Cube::Input &input, unsigned int deliveryTime)
     {
-        client->synchronize(t, state, input);
+        fprintf(logfile5,"pop, server time, %d, event time, %d, delivery time, %d, input jump, %d\n", time, t, deliveryTime, input.jump);
+		client->synchronize(t, state, input);
         proxy->synchronize(t, state, input);
     }
 
@@ -116,6 +132,7 @@ private:
     struct Event
     {
         unsigned int deliveryTime;
+		bool isInputEvent;
         virtual void execute(Connection &connection) = 0;
     };
 
@@ -126,7 +143,7 @@ private:
         std::vector<Move> importantMoves;
         void execute(Connection &connection)
         {
-            connection.input(time, input, importantMoves);
+			connection.input(time, input, importantMoves, deliveryTime);
         }
     };
 
@@ -137,7 +154,7 @@ private:
         Cube::Input input;
         void execute(Connection &connection)
         {
-            connection.synchronize(time, state, input);
+            connection.synchronize(time, state, input, deliveryTime);
         }
     };
 
@@ -152,7 +169,12 @@ private:
     {
         assert(event);
         event->deliveryTime = time + (unsigned int) (latency/timestep);
-        queue.push(event);
+		if(event->isInputEvent){
+			fprintf(logfile2,"insert, client time, %d, event time, %d,  delivery time, %d, input jump, %d\n", time, ((InputEvent*)event)->time, event->deliveryTime, ((InputEvent*)event)->input.jump);
+		}else{
+			fprintf(logfile4,"insert, server time, %d, event time, %d,  delivery time, %d, input jump, %d\n", time, ((SyncEvent*)event)->time, event->deliveryTime, ((SyncEvent*)event)->input.jump);
+		}
+		queue.push(event);
     }
 
     /// process event queue and execute events ready for delivery
@@ -189,7 +211,7 @@ private:
     Server *server;
     Proxy *proxy;
 
-    FILE *logfile;
+    FILE *logfile, *logfile2, *logfile3, *logfile4, *logfile5;
 
     unsigned int time;
 };

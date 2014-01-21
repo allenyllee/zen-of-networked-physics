@@ -2,7 +2,7 @@
 // Copyright (c) Glenn Fiedler 2004
 // http://www.gaffer.org/articles
 
-//#define LOGGING
+#define LOGGING
 #define DEVELOPMENT
 
 #pragma warning( disable : 4127 )  // conditional expression is constant
@@ -49,6 +49,7 @@ enum Key
     F7,
     F8,
     F9,
+	STOP, //autokey
 };
 
 void onKeyUp(Key key);
@@ -105,6 +106,7 @@ void onQuit()
 	quit = true;
 }
 
+
 // options manager
 
 #include "Options.h"
@@ -138,12 +140,31 @@ int main()
 
     float absoluteTime = 0.0f;
     
+	float oldTime = 0; //autokey timer
+
+	char *filename = "time.log"; //time log
+	char *filename2 = "time2.log";
+	FILE *logfile = fopen(filename,"w"); //time log
+	FILE *logfile2 = fopen(filename2,"w");
+
+
+
+
+
+
+
+
+
+
+
+
     while (!quit) 
 	{			
         // update absolute time
 
         float newTime = time();
         float deltaTime = newTime - absoluteTime;
+		
 
         if (deltaTime<=0.0f)
             continue;
@@ -154,11 +175,44 @@ int main()
 
 		accumulator += deltaTime;
 
-        // update discrete time
+        
 
-        while (accumulator>=timestep)
+		//autokey
+		if(newTime >= 5){
+			onQuit();
+		}else if(newTime >= 0){
+			//fprintf(logfile2,"newtime, %f, oldtime, %f\n",newTime,oldTime);
+			if((newTime - oldTime)<0.02){
+				input.onKeyDown(Space);
+				//input.onKeyDown(Right);
+			}else if((newTime - oldTime)<0.5){
+				input.onKeyUp(Space);
+			}else{
+				oldTime = newTime;
+			}
+			//else if((newTime - oldTime)<1){
+			//	input.onKeyUp(Space);
+			//}else if((newTime - oldTime)<2){
+			//	input.onKeyUp(Right);
+			//}else if((newTime - oldTime)<2.03){
+			//	input.onKeyDown(Space);
+			//	input.onKeyDown(Left);
+			//}else if((newTime - oldTime)<3){
+			//	input.onKeyUp(Space);
+			//}else if((newTime - oldTime)<4){
+			//	input.onKeyUp(Left);
+			//}else{
+			//	oldTime = newTime;
+			//}
+		}
+
+        // update discrete time
+		while (accumulator>=timestep)
         {
-            // update input
+            
+			fprintf(logfile,"newTime, %f, absoluteTime, %f, accumulator, %f, discrete time, %d, input jump, %d\n", newTime, absoluteTime, accumulator, t, input.space()); //time log
+			
+			// update input
 
             input.update(t);
 
@@ -182,7 +236,10 @@ int main()
 
             accumulator -= timestep;
             t++;
+			fprintf(logfile,"newTime, %f, absoluteTime, %f, accumulator, %f, discrete time, %d, input jump, %d\n", newTime, absoluteTime, accumulator, t, input.space()); //time log
         }
+
+		
 
         // render view
 
@@ -193,6 +250,9 @@ int main()
         updateDisplay();
 	}
 	
+	fclose(logfile); //time log
+	fclose(logfile2);
+
 	closeDisplay();
 	
 	return 0;

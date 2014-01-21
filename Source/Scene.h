@@ -1,6 +1,8 @@
 /// Scene class.
 /// Represents the scene managing objects and collision geometry.
 
+#include <string.h>
+
 const float defaultTightness = 0.25f;
 const float smoothTightness = 0.1f;
 
@@ -71,6 +73,10 @@ struct Scene
     {
         #ifdef LOGGING
         logfile = fopen(filename, "w");
+		char filename2[25];
+		strcpy(filename2, filename);
+		strcat(filename2, ".rewind.log");
+		logfile2 = fopen(filename2, "w");
         #endif
     }
 
@@ -81,11 +87,14 @@ struct Scene
         // log for comparison
 
         #ifdef LOGGING
-        if (logfile && !replaying)
+		if(logfile)
+        //if (logfile && !replaying)
         {
             Vector position = cube.state().position;
             Quaternion orientation = cube.state().orientation;
-            fprintf(logfile, "%d: position=(%f,%f,%f), orientation=(%f,%f,%f,%f), input=(%d,%d,%d,%d,%d)\n", t, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump);
+			fprintf(logfile, "%d, position, %f,%f,%f, orientation, %f,%f,%f,%f, input, %d,%d,%d,%d,%d, replaying, %d\n", t, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump, replaying);
+			if(replaying)
+				fprintf(logfile2, "%d, position, %f,%f,%f, orientation, %f,%f,%f,%f, input, %d,%d,%d,%d,%d, replaying, %d\n", t, position.x, position.y, position.z, orientation.w, orientation.x, orientation.y, orientation.z, input.left, input.right, input.forward, input.back, input.jump, replaying);
         }
         #endif
 
@@ -97,6 +106,7 @@ struct Scene
 
         if (!replaying)
             smoothed.smooth(cube.state(), tightness);
+
 
         // update smoothing tightness value for adaptive smoothing
 
@@ -125,7 +135,7 @@ public:
 
     std::vector<Plane> planes;      ///< the set of collision planes in the scene.
 
-    FILE *logfile;                  ///< file handle for logging (i diff logs to check sync)
+    FILE *logfile, *logfile2;                  ///< file handle for logging (i diff logs to check sync)
 
     bool replaying;                 ///< true if currently replaying moves (client side correction)
 

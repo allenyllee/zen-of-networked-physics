@@ -136,7 +136,7 @@ private:
 
     void loadPages(const char filename[])
     {
-		const charactersPerLine = 41;
+		const int charactersPerLine = 41;
 
         pages.resize(0);
 

@@ -204,14 +204,19 @@ struct Options : public Input::Listener
     {
         renderClient = true;
         renderServer = false;
+		//renderServer = true; //autotest
         renderProxy = false;
         renderHistory = false;
-        
+        //renderHistory = true; //autotest
+
         renderSmoothedClient = false;
         renderSmoothedProxy = false;
 
         packetLoss = NoPacketLoss;
-        latency = NoLatency;
+		//packetLoss = FiftyPercentPacketLoss; //autotest
+        //latency = NoLatency;
+		//latency = TwoSecondsLatency; //autotest
+		latency = TwoHundredMillisecondsLatency; //autotest
     }
 
     bool renderClient;

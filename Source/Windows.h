@@ -1,6 +1,7 @@
 // Simple Windows OpenGL framework
 
-#ifdef _WIN32
+
+#ifdef _WIN32 
 
 #define VC_EXTRALEAN 
 #define WIN32_LEAN_AND_MEAN 

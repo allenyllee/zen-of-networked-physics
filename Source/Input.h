@@ -145,7 +145,7 @@ struct Input
             // log to "input.log" to enable playback later
 
             #ifdef LOGGING
-            fprintf( logfile, "%d: %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
+            fprintf( logfile, "%d, %d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", 
                      t,
                      current.left, 
                      current.right, 

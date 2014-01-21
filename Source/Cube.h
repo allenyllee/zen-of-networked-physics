@@ -105,7 +105,7 @@ public:
 		current.size = 1;
 		current.mass = 1;
 		current.inverseMass = 1.0f / current.mass;
-		current.position = Vector(0,40,0);
+		current.position = Vector(0,0.5,0);
 		current.momentum = Vector(0,0,0);
 		current.orientation.identity();
 		current.angularMomentum = Vector(0,0,0);
